@@ -10,6 +10,7 @@ import SwiftUI
 struct Home: View {
     @State private var index = "Playstation"
     @State private var menu = false
+    @State private var withMenu = UIScreen.main.bounds.width
     var body: some View {
         ZStack{
             VStack{
@@ -28,6 +29,35 @@ struct Home: View {
                             Color.red
                         }
                     }
+                    
+                }
+            }
+//            termina navbar ipad
+            if menu{
+                HStack{
+                    Spacer()
+                    VStack{
+                        HStack{
+                            Spacer()
+                            Button(action:{
+                                withAnimation{
+                                    menu.toggle()
+                                }
+                                }){
+                                    Image(systemName: "xmark")
+                                        .font(.system(size: 22, weight: .bold))
+                                }
+                        }.padding()
+                        .padding(.top, 50)
+                        VStack(alignment: .trailing){
+                            ButtonView(index: $index, menu: $menu, title: "Playstation")
+                            ButtonView(index: $index, menu: $menu, title: "Xbox")
+                            ButtonView(index: $index, menu: $menu, title: "Nintendo")
+                        }
+                        Spacer()
+                    }
+                    .frame(width: withMenu - 200)
+                    .background(Color.purple)
                     
                 }
             }
