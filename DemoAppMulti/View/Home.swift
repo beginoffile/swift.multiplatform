@@ -11,14 +11,28 @@ struct Home: View {
     @State private var index = "Playstation"
     @State private var menu = false
     @State private var withMenu = UIScreen.main.bounds.width
+    var device = UIDevice.current.userInterfaceIdiom
+    @Environment(\.horizontalSizeClass) var width
+    
+    
+    func getColumns() -> Int{
+        return (device == .pad || (device == .phone && width == .regular)) ? 3 : 1
+        //return (device == .pad) ? 3 : ((device == .phone && width == .regular) ? 3 : 1)
+    }
+    
     var body: some View {
         ZStack{
             VStack{
                 NavBar(index: $index, menu: $menu)
                 ZStack{
                     if index == "Playstation"{
-                        VStack{
-                            Color.blue
+                        ScrollView(.vertical, showsIndicators:false){
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 20), count: getColumns()), spacing: 20){
+                                ForEach(1...9, id:\.self){ _ in
+                                    CardView()
+                                        .padding(.all)
+                                }
+                            }
                         }
                     }else if index == "Xbox"{
                         VStack{
@@ -61,6 +75,6 @@ struct Home: View {
                     
                 }
             }
-        }
+        }.background(Color.white.opacity(0.9))
     }
 }

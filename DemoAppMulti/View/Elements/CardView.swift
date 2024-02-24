@@ -9,7 +9,17 @@ import SwiftUI
 
 struct CardView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(spacing:20){
+            Image("imagedemo")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+            Text("Sonic")
+                .font(.title)
+                .bold()
+                .foregroundColor(.black)
+        }.padding()
+        .background(Color.white)
+        .cornerRadius(20)
     }
 }
 
