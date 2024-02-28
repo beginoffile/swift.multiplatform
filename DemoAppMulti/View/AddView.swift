@@ -19,6 +19,7 @@ struct AddView: View {
     @State private var imagePicker = false
     @State private var source : UIImagePickerController.SourceType = .camera
     
+    @State private var progress = false
     var body: some View {
         NavigationStack{
             ZStack{
@@ -72,11 +73,13 @@ struct AddView: View {
                         .cornerRadius(15)
                         
                         Button(action: {
+                            progress = true
                             guardar.save(titulo: titulo, desc: desc, plataforma: plataforma, portada: imageData, completion: {done in
                                 if done{
                                     titulo = ""
                                     desc=""
                                     imageData = .init(capacity: 0)
+                                    progress = false
                                 }
                             })
                             
@@ -86,6 +89,11 @@ struct AddView: View {
                                 .bold()
                                 .font(.largeTitle)
                         })
+                        
+                        if progress{
+                            Text("Espere un momento por favor").foregroundColor(.black)
+                            ProgressView()
+                        }
                         
                     }
 

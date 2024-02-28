@@ -120,6 +120,34 @@ class FirebaseViewModel: ObservableObject{
         
         
     }
+    
+//    Eliminar
+    func delete(fireModel: FirebaseModel, plataforma:String){
+//        eliminar del firestore
+
+        let id = fireModel.id
+        let db = Firestore.firestore()
+        db.collection(plataforma).document(id).delete()
+//        Eliminar del storage
+        let imagen = fireModel.portada
+        let borrarImagen = Storage.storage().reference(forURL: imagen)
+        borrarImagen.delete(completion: nil)
+    }
+    
+//    EDITAR
+    func edit(titulo: String, desc: String, plataforma: String, id:String, completion: @escaping (_ done:Bool) -> Void){
+        let db = Firestore.firestore()
+
+        let campos: [String:Any] = ["titulo":titulo, "desc": desc]
+        db.collection(plataforma).document(id).updateData(campos){error in
+            if let error = error?.localizedDescription{
+                print("Error al editar", error)
+            }else{
+                print("edito solo texto")
+            completion(true)
+            }
+        }
+    }
 }
 
 
