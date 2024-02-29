@@ -12,6 +12,13 @@ import FirebaseStorage
 class FirebaseViewModel: ObservableObject{
     @Published var show = false
     @Published var datos = [FirebaseModel]()
+    @Published var itemUpdate: FirebaseModel!
+    @Published var showEditar = false
+    
+    func sendData(item: FirebaseModel){
+        itemUpdate = item
+        showEditar.toggle()
+    }
     
     
     func login(email: String, pass:String, completion: @escaping (_ done:Bool) -> Void ){
@@ -148,6 +155,53 @@ class FirebaseViewModel: ObservableObject{
             }
         }
     }
+    
+//    EDITAR CON IMAGEN
+    func editWithImage(titulo: String, desc: String, plataforma: String, id:String, fireModel: FirebaseModel, portada: Data, completion: @escaping (_ done:Bool) -> Void){
+        
+//        Eliminar la imagen
+        let imagen = fireModel.portada
+        let borrarImagen = Storage.storage().reference(forURL: imagen)
+        borrarImagen.delete(completion: nil)
+        
+        //Subir la nueva imagen
+        let storage = Storage.storage().reference()
+        
+        let nombrePortada = UUID()
+        let directorio = storage.child("imagenes/\(nombrePortada)")
+        let metadata = StorageMetadata()
+        metadata.contentType = "image/png"
+        
+        directorio.putData(portada, metadata:metadata){data, error in
+            if error == nil{
+                print("guardo la imagen nueva")
+                //EDITANDO TEXTO
+                let db = Firestore.firestore()
+
+                let campos: [String:Any] = ["titulo":titulo, "desc": desc, "portada":String(describing: directorio)]
+                db.collection(plataforma).document(id).updateData(campos){error in
+                    if let error = error?.localizedDescription{
+                        print("Error al editar", error)
+                    }else{
+                        print("edito solo texto")
+                    completion(true)
+                    }
+                }
+               
+                //FIN EDITAR TEXTO
+                
+            }else{
+                if let error = error?.localizedDescription{
+                    print("Fallo al subir la imagen en storage", error)
+                }else{
+                    print("fallo la app")
+                }
+            }
+        }
+        
+     
+    }
+    
 }
 
 

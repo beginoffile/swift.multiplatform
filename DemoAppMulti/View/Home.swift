@@ -6,11 +6,13 @@
 //
 
 import SwiftUI
+import Firebase
 
 struct Home: View {
     @State private var index = "Playstation"
     @State private var menu = false
     @State private var withMenu = UIScreen.main.bounds.width
+    @EnvironmentObject var loginShow: FirebaseViewModel
     
     
    
@@ -54,6 +56,15 @@ struct Home: View {
                             ButtonView(index: $index, menu: $menu, title: "Playstation")
                             ButtonView(index: $index, menu: $menu, title: "Xbox")
                             ButtonView(index: $index, menu: $menu, title: "Nintendo")
+                            Button(action: {
+                                try! Auth.auth().signOut()
+                                UserDefaults.standard.removeObject(forKey: "sesion")
+                                loginShow.show = false
+                            }, label: {
+                                Text("Salir")
+                                    .foregroundColor(.white)
+                                    .font(.system(size: 22, weight: .bold))
+                            })
                         }
                         Spacer()
                     }
@@ -62,6 +73,6 @@ struct Home: View {
                     
                 }
             }
-        }.background(Color.white.opacity(0.9))
+        }.background(Color("fondo"))
     }
 }
